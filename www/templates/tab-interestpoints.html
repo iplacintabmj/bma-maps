@@ -1,9 +1,49 @@
 <ion-view view-title="Interest Points">
-  <ion-content class="padding">
+  <ion-header-bar align-title="left" class="bar-subheader">
+    <div class="buttons">
+        <button class="button button-icon ion-android-search"
+                ng-click="showFilterBar()"></button>
+    </div>
+  </ion-header-bar>
+  <ion-content class="has-header">
     <ion-list>
       <ion-item ng-repeat="poi in pois">
         {{poi.name}}
+        <ion-option-button class="button-positive" ng-click="openModal(poi)">
+          Picture
+        </ion-option-button>
       </ion-item>
     </ion-list>
   </ion-content>
 </ion-view>
+
+<script id="picture-modal.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar>
+      <h1 class="title">{{currentPoi.name}}</h1>
+    </ion-header-bar>
+    <ion-content>
+      <div class="row">
+        <div class="col">
+          <div>
+            <h5>INFO</h5>
+            <ul>
+              <li class="item">
+                    Floor {{currentPoi.floor_number}}
+              </li>
+              <li class="item">
+                    Type {{currentPoi.pois_type}}
+              </li>
+              <li class="item" ng-if="currentPoi.is_building_entrance == 'false'">
+                    It is not a building entrance
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col">
+          <img ng-src="{{imageUrl}}" width="300px" height="200px"/>
+        </div>
+      </div>
+    </ion-content>
+  </ion-modal-view>
+</script>

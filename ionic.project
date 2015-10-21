@@ -5,6 +5,10 @@
     {
       "path": "/anyplace",
       "proxyUrl": "http://anyplace.rayzit.com/anyplace/"
+    },
+    {
+      "path": "/images",
+      "proxyUrl": "http://pupfish04.internal.bmjgroup.com:8080/"
     }
   ]
 }
