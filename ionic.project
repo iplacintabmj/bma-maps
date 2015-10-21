@@ -1,4 +1,10 @@
 {
   "name": "bmaApp",
-  "app_id": "b855d2b4"
+  "app_id": "b855d2b4",
+  "proxies": [
+    {
+      "path": "/anyplace",
+      "proxyUrl": "http://anyplace.rayzit.com/anyplace/"
+    }
+  ]
 }
