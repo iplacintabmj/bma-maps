@@ -8,6 +8,7 @@ angular.module('starter.controllers', ['starter.directives'])
 
   $scope.mapCreated = function(map) {
     $scope.map = map;
+    $scope.map.setZoom(2);
   };
 
   $scope.centerOnMe = function () {
@@ -23,6 +24,7 @@ angular.module('starter.controllers', ['starter.directives'])
 
     navigator.geolocation.getCurrentPosition(function (pos) {
       $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+      $scope.map.setZoom(17);
       $ionicLoading.hide();
     }, function (error) {
       alert('Unable to get location: ' + error.message);
