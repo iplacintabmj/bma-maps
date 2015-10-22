@@ -12,7 +12,7 @@ angular.module('starter.controllers', ['starter.directives'])
   };
 
   $scope.centerOnMe = function () {
-		
+
     if (!$scope.map) {
       return;
     }
@@ -26,15 +26,23 @@ angular.module('starter.controllers', ['starter.directives'])
       $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
       $scope.map.setZoom(17);
       $ionicLoading.hide();
-	  var marker = new google.maps.Marker({
-			position: {lat: pos.coords.latitude, lng: pos.coords.longitude},
-			map: $scope.map,
-		});
+
+      var image = 'img/flag.png';
+
+      var marker = new google.maps.Marker({
+        position: {lat: pos.coords.latitude, lng: pos.coords.longitude},
+        animation: google.maps.Animation.DROP,
+        map: $scope.map,
+        icon: image
+      });
+
+      markers.push(marker);
+
     }, function (error) {
       alert('Unable to get location: ' + error.message);
     });
   };
-  
+
   $rootScope.$on('loadPoi', function(event, poi) {
         for (var i = 0; i < markers.length; i++) {
           markers[i].setMap(null);
@@ -51,46 +59,63 @@ angular.module('starter.controllers', ['starter.directives'])
           title: poi.name
         });
         markers.push(marker);
+
+        var infowindow = new google.maps.InfoWindow();
+        
+        marker.content = poi.name;
+
+        google.maps.event.addListener(marker, 'click', (function(marker, poi, infowindow) {
+          return function() {
+            infowindow.setContent(this.content);
+            infowindow.open($scope.map, this);
+          };
+        })(marker, poi, infowindow));
+
+        google.maps.event.trigger(marker, 'click');
     });
 
   $scope.setMarkers = function() {
-	$scope.centerOnMe();
-	var data = {
-		buid : 'building_50f56644-9101-42b0-b2d9-49df37fe95db_1445422155408'
-	};
-	var infowindow = new google.maps.InfoWindow();
-	
-	$http.post('http://localhost:8100/anyplace/mapping/pois/all_building', data)
-    .then(function(resp) {
-      var pois = resp.data.pois.filter(function(item)
-      {
-        return item.name != 'Connector';
-      });
-	  for (poi in pois)
-	  {
-		var marker = new google.maps.Marker({
-			position: {lat: parseFloat(pois[poi].coordinates_lat), lng: parseFloat(pois[poi].coordinates_lon)},
-			map: $scope.map,
-		});
-		
-		marker.content = pois[poi].name;
-		
-		google.maps.event.addListener(marker, 'click', (function(marker, poi, infowindow) {
-		return function() {
-			infowindow.setContent(this.content);
-			infowindow.open($scope.map, this);
-		};
-		})(marker, poi, infowindow));
 
-		google.maps.event.trigger(marker, 'click');
-	
-	  }
-      // For JSON responses, resp.data contains the result
-    }, function(err) {
-      console.error('ERR', err);
-      // err.status will contain the status code
-    });
-  }
+  	$scope.centerOnMe();
+
+  	var data = {
+  		buid : 'building_50f56644-9101-42b0-b2d9-49df37fe95db_1445422155408'
+  	};
+  	var infowindow = new google.maps.InfoWindow();
+
+  	$http.post('http://localhost:8100/anyplace/mapping/pois/all_building', data)
+      .then(function(resp) {
+        var pois = resp.data.pois.filter(function(item)
+        {
+          return item.name != 'Connector';
+        });
+
+
+    	  for (poi in pois)
+    	  {
+      		var marker = new google.maps.Marker({
+      			position: {lat: parseFloat(pois[poi].coordinates_lat), lng: parseFloat(pois[poi].coordinates_lon)},
+      			map: $scope.map
+      		});
+
+          markers.push(marker);
+
+      		marker.content = pois[poi].name;
+
+      		google.maps.event.addListener(marker, 'click', (function(marker, poi, infowindow) {
+        		return function() {
+        			infowindow.setContent(this.content);
+        			infowindow.open($scope.map, this);
+        		};
+      		})(marker, poi, infowindow));
+
+  	  }
+        // For JSON responses, resp.data contains the result
+      }, function(err) {
+        console.error('ERR', err);
+        // err.status will contain the status code
+      });
+    }
 })
 
 .controller("InterestpointsCtrl", function($rootScope, $scope, $http, $ionicModal, $ionicFilterBar, $location) {
@@ -156,8 +181,6 @@ angular.module('starter.controllers', ['starter.directives'])
       $rootScope.$broadcast('loadPoi', poi);
       $location.path("tab/map");
   };
-
-  function rad(x) {return x*Math.PI/180;}
 
   $scope.findClosestToilet = function (poi) {
 

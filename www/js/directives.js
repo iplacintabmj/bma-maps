@@ -9,20 +9,20 @@ angular.module('starter.directives', [])
     link: function ($scope, $element, $attr) {
       function initialize() {
         var mapOptions = {
-          center: new google.maps.LatLng(51.526127, -0.128448),  
+          center: new google.maps.LatLng(51.526127, -0.128448),
           zoom: 18,
           mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         var map = new google.maps.Map($element[0], mapOptions);
 		console.log(map);
-        //$scope.onCreate({map: map});
-		
+        $scope.onCreate({map: map});
+
 		//try something
 		var imageBounds = {
-			north: 51.526870,   
+			north: 51.526870,
 			south: 51.525407,
-			east: -0.127541,     
-			west: -0.129780   
+			east: -0.127541,
+			west: -0.129780
 		};
 
 		structuralOverlay = new google.maps.GroundOverlay(
