@@ -79,6 +79,13 @@ angular.module('starter.controllers', ['starter.directives'])
     $scope.modal = modal;
   });
 
+  $ionicModal.fromTemplateUrl('toilet-modal.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.toiletModal = modal;
+  });
+
   $scope.openModal = function(poi) {
     console.log('Showing picture for POI', poi);
     $scope.currentPoi = poi;
@@ -88,6 +95,7 @@ angular.module('starter.controllers', ['starter.directives'])
 
   $scope.closeModal = function() {
     $scope.modal.hide();
+    $scope.toiletModal.hide();
   };
 
   $scope.showFilterBar = function () {
@@ -106,9 +114,59 @@ angular.module('starter.controllers', ['starter.directives'])
       $location.path("tab/map");
   };
 
+  function rad(x) {return x*Math.PI/180;}
+
+  $scope.findClosestToilet = function (poi) {
+
+    var distances = [];
+    var closest = -1;
+
+    var lat1 = poi.coordinates_lat;
+    var lon1 = poi.coordinates_lon;
+
+    var latLng1 = new google.maps.LatLng(lat1, lon1);
+
+    console.log("Checkin distance to " + poi.name);
+    console.log("Position" + latLng1);
+
+    var pois = $scope.pois;
+    for( i=0;i<pois.length; i++ ) {
+        if (pois[i].name != poi.name
+          && pois[i].pois_type == 'Toilets'
+          && pois[i].floor_number == poi.floor_number) {
+
+          var lat2 = pois[i].coordinates_lat;
+          var lon2 = pois[i].coordinates_lon;
+
+          var latLng2 = new google.maps.LatLng(lat2, lon2);
+
+          var d = google.maps.geometry.spherical.computeDistanceBetween(latLng1, latLng2);
+
+          distances[i] = d;
+          if ( closest == -1 || d < distances[closest] ) {
+              closest = i;
+              console.log(pois[closest].name + " -> distance: " + d);
+              console.log("Position" + latLng2);
+          }
+        }
+    }
+
+    if (pois[closest]) {
+      $scope.closetToiletMessage = "The closest toilet in your floor is "
+        + pois[closest].name + ". Coordinates -> "
+        + pois[closest].coordinates_lat + ":" + pois[closest].coordinates_lon;
+      $scope.closestToiletImg = 'http://localhost:8100/images/' + pois[closest].puid + ".jpg";
+    }
+    else {
+      $scope.closetToiletMessage = "There are no toilets in this floor";
+    }
+    $scope.toiletModal.show();
+  }
+
   //Cleanup the modal when we're done with it!
   $scope.$on('$destroy', function() {
     $scope.modal.remove();
+    $scope.toiletModal.remove();
   });
 
 });

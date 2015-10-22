@@ -10,6 +10,11 @@
       <ion-item ng-repeat="poi in pois">
         {{poi.name}}
         <ion-option-button
+          class="button-royal ion-woman"
+          style="padding-left:3vw;padding-right:3vw;font-size:4vw;"
+          ng-click="findClosestToilet(poi)">
+        </ion-option-button>
+        <ion-option-button
           class="button-balanced ion-location"
           style="padding-left:3vw;padding-right:3vw;font-size:4vw;"
           ng-click="showInMap(poi)">
@@ -48,6 +53,23 @@
         </div>
         <div class="col">
           <img ng-src="{{imageUrl}}" width="80%" height="70%"/>
+        </div>
+      </div>
+    </ion-content>
+  </ion-modal-view>
+</script>
+
+<script id="toilet-modal.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar>
+      <h1 class="title">The closest toilet</h1>
+    </ion-header-bar>
+    <ion-content style="text-align:center">
+        <div>
+          {{closetToiletMessage}}
+        </div>
+        <div>
+          <img ng-src="{{closestToiletImg}}" width="40%" height=""/>
         </div>
       </div>
     </ion-content>
