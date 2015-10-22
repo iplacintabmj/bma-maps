@@ -9,8 +9,15 @@
     <ion-list>
       <ion-item ng-repeat="poi in pois">
         {{poi.name}}
-        <ion-option-button class="button-positive" ng-click="openModal(poi)">
-          Picture
+        <ion-option-button
+          class="button-balanced ion-location"
+          style="padding-left:3vw;padding-right:3vw;font-size:4vw;"
+          ng-click="showInMap(poi)">
+        </ion-option-button>
+        <ion-option-button
+          class="button-positive ion-information-circled"
+          style="padding-left:2vw;padding-right:2vw;font-size:4vw;"
+          ng-click="openModal(poi)">
         </ion-option-button>
       </ion-item>
     </ion-list>
@@ -26,7 +33,6 @@
       <div class="row">
         <div class="col">
           <div>
-            <h5>INFO</h5>
             <ul>
               <li class="item">
                     Floor {{currentPoi.floor_number}}
@@ -41,7 +47,7 @@
           </div>
         </div>
         <div class="col">
-          <img ng-src="{{imageUrl}}" width="300px" height="200px"/>
+          <img ng-src="{{imageUrl}}" width="80%" height="70%"/>
         </div>
       </div>
     </ion-content>
